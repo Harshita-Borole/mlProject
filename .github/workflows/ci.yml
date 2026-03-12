@@ -1,29 +1,40 @@
 name: Email AI CI Pipeline
 
+# Trigger the workflow on push or pull request to main branch
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-
   build:
 
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout your repository code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      # Step 2: Setup Python (latest stable supported version)
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.10
+      # Step 3: Upgrade pip and install dependencies
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Install Dependencies
-      run: |
-        pip install -r requirements.txt
+      # Step 4: Run Backend (you can replace this with tests if you have any)
+      - name: Run Backend
+        run: |
+          python app.py
 
-    - name: Run Backend Test
-      run: |
-        python app.py
+      # Optional Step 5: Run unit tests if you add them later
+      #- name: Run Tests
+      #  run: |
+      #    pytest
