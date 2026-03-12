@@ -1,32 +1,33 @@
 name: Email AI CI Pipeline
-- name: Install Dependencies
-  run: |
-    python -m pip install --upgrade pip
-    pip install -r mlProject/requirements.txt
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:   # Enables the "Run workflow" button
+  workflow_dispatch:   # Enables manual run
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Checkout code
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Step 2: Setup Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.13
 
+      # Step 3: Install Dependencies
       - name: Install Dependencies
-  run: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt   # <- root path
 
+      # Step 4: Run Backend
       - name: Run Backend
-  run: python mlProject/app.py
+        run: python mlProject/app.py       # <- adjust path if app.py is inside mlProject
