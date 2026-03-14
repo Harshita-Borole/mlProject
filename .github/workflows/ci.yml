@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:   # Enables manual run
+  workflow_dispatch: 
 
 jobs:
   build:
@@ -30,4 +30,4 @@ jobs:
 
       # Step 4: Run Backend
       - name: Run Backend
-        run: python mlProject/app.py       # <- adjust path if app.py is inside mlProject
+        run: python app.py     
