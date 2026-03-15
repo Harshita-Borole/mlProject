@@ -30,22 +30,40 @@ h1,h2,h3,h4,p,label,span{
 color:white !important;
 }
 
+/* Bigger headings */
+
+h1{
+font-size:38px !important;
+font-weight:800 !important;
+}
+
+h2{
+font-size:30px !important;
+font-weight:700 !important;
+}
+
+h3{
+font-size:24px !important;
+font-weight:700 !important;
+}
+
 /* Navigation bar */
 
 .navbar{
 display:flex;
-justify-content:space-between;
+justify-content:center;
 align-items:center;
 background:#1e3a8a;
-padding:15px 30px;
+padding:18px;
 border-radius:10px;
 margin-bottom:25px;
 }
 
 .nav-title{
-font-size:22px;
-font-weight:700;
+font-size:30px;
+font-weight:800;
 color:white;
+text-align:center;
 }
 
 /* Cards */
@@ -73,23 +91,29 @@ background:#2563eb;
 color:white;
 border:none;
 border-radius:8px;
-height:40px;
-font-weight:600;
+height:42px;
+font-weight:700;
+font-size:16px;
 }
 
 .stButton>button:hover{
 background:#1d4ed8;
 }
 
-/* Metrics */
+/* Metrics labels */
 
 [data-testid="stMetricLabel"]{
 color:white !important;
+font-size:20px !important;
+font-weight:800 !important;
 }
+
+/* Metrics values */
 
 [data-testid="stMetricValue"]{
 color:#60a5fa !important;
-font-weight:800;
+font-weight:900 !important;
+font-size:30px !important;
 }
 
 /* Keyword tags */
@@ -101,7 +125,8 @@ color:white;
 padding:6px 12px;
 border-radius:20px;
 margin:4px;
-font-size:0.8rem;
+font-size:0.85rem;
+font-weight:600;
 }
 
 </style>
@@ -117,7 +142,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------
-# PAGE SELECTOR (HORIZONTAL)
+# PAGE SELECTOR
 # ------------------------------------------------
 page = st.radio(
     "",
@@ -156,6 +181,7 @@ if page == "Email Analysis":
         if analyze:
 
             if email_text.strip()=="":
+
                 st.warning("Please enter email text")
 
             else:
