@@ -1,0 +1,4 @@
+# Ignore ML models
+email_ai_backend/models/
+*.pkl
+*.safetensors
