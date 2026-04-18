@@ -2,3 +2,4 @@
 email_ai_backend/models/
 *.pkl
 *.safetensors
+/models

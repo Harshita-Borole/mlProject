@@ -1,308 +1,66 @@
 import streamlit as st
 import requests
-import pandas as pd
-
-# ------------------------------------------------
-# PAGE CONFIG
-# ------------------------------------------------
-st.set_page_config(
-    page_title="SentinMail AI",
-    page_icon="🛡️",
-    layout="wide"
-)
-
-# ------------------------------------------------
-# CSS STYLING
-# ------------------------------------------------
-st.markdown("""
-<style>
-
-/* Main background */
-
-.stApp{
-background-color:#0f172a;
-color:white;
-}
-
-/* All text white */
-
-h1,h2,h3,h4,p,label,span{
-color:white !important;
-}
-
-/* Bigger headings */
-
-h1{
-font-size:38px !important;
-font-weight:800 !important;
-}
-
-h2{
-font-size:30px !important;
-font-weight:700 !important;
-}
-
-h3{
-font-size:24px !important;
-font-weight:700 !important;
-}
-
-/* Navigation bar */
-
-.navbar{
-display:flex;
-justify-content:center;
-align-items:center;
-background:#1e3a8a;
-padding:18px;
-border-radius:10px;
-margin-bottom:25px;
-}
-
-.nav-title{
-font-size:30px;
-font-weight:800;
-color:white;
-text-align:center;
-}
-
-/* Cards */
-
-.card{
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-border:1px solid #3b82f6;
-margin-bottom:20px;
-}
-
-/* Text area */
-
-textarea{
-background:#1e293b !important;
-color:white !important;
-border:1px solid #3b82f6 !important;
-}
-
-/* Buttons */
-
-.stButton>button{
-background:#2563eb;
-color:white;
-border:none;
-border-radius:8px;
-height:42px;
-font-weight:700;
-font-size:16px;
-}
-
-.stButton>button:hover{
-background:#1d4ed8;
-}
-
-/* Metrics labels */
 
-[data-testid="stMetricLabel"]{
-color:white !important;
-font-size:20px !important;
-font-weight:800 !important;
-}
+# ==============================
+# TITLE
+# ==============================
+st.set_page_config(page_title="Email AI Assistant", layout="wide")
 
-/* Metrics values */
+st.title("📩 AI Email Analyzer")
+st.write("Analyze emails for Spam, Priority, Category, Summary & Keywords")
 
-[data-testid="stMetricValue"]{
-color:#60a5fa !important;
-font-weight:900 !important;
-font-size:30px !important;
-}
+# ==============================
+# INPUT
+# ==============================
+email_text = st.text_area("✉️ Enter Email Text", height=200)
 
-/* Keyword tags */
+# ==============================
+# BUTTON
+# ==============================
+if st.button("Analyze Email"):
 
-.tag{
-display:inline-block;
-background:#2563eb;
-color:white;
-padding:6px 12px;
-border-radius:20px;
-margin:4px;
-font-size:0.85rem;
-font-weight:600;
-}
+    if not email_text.strip():
+        st.warning("Please enter an email")
+    else:
+        try:
+            # Call Flask API
+            response = requests.post(
+                "http://127.0.0.1:5000/analyze",
+                json={"email": email_text}
+            )
 
-</style>
-""", unsafe_allow_html=True)
+            result = response.json()
 
-# ------------------------------------------------
-# TOP NAVIGATION BAR
-# ------------------------------------------------
-st.markdown("""
-<div class="navbar">
-<div class="nav-title">🛡️ SentinMail AI Email Intelligence</div>
-</div>
-""", unsafe_allow_html=True)
+            # ==============================
+            # OUTPUT
+            # ==============================
+            st.subheader("📊 Analysis Result")
 
-# ------------------------------------------------
-# PAGE SELECTOR
-# ------------------------------------------------
-page = st.radio(
-    "",
-    ["Email Analysis","Dataset"],
-    horizontal=True
-)
+            col1, col2, col3 = st.columns(3)
 
-st.divider()
+            with col1:
+                st.metric("🚨 Spam", result["spam"])
+                st.metric("Confidence", result["spam_confidence"])
 
-# ------------------------------------------------
-# PAGE 1 EMAIL ANALYSIS
-# ------------------------------------------------
-if page == "Email Analysis":
+            with col2:
+                st.metric("📂 Category", result["category"])
+                st.metric("Confidence", result["category_confidence"])
 
-    st.header("📧 Email Intelligence Dashboard")
+            with col3:
+                st.metric("⚡ Priority", result["priority"])
+                st.metric("Confidence", result["priority_confidence"])
 
-    col1,col2 = st.columns(2)
+            st.write("---")
 
-    # INPUT
-    with col1:
+            st.subheader("🧠 Summary")
+            st.info(result["summary"])
 
-        st.subheader("Email Input")
+            st.subheader("🔑 Keywords")
+            st.write(", ".join(result["keywords"]))
 
-        email_text = st.text_area(
-            "Paste Email Content",
-            height=300
-        )
+            st.subheader("🔥 Importance Score")
+            st.progress(result["importance_score"] / 100)
 
-        analyze = st.button("Analyze Email")
+        except Exception as e:
+            st.error("Backend not running! Start Flask server first.")
 
-    # OUTPUT
-    with col2:
-
-        st.subheader("Analysis Result")
-
-        if analyze:
-
-            if email_text.strip()=="":
-
-                st.warning("Please enter email text")
-
-            else:
-
-                try:
-
-                    url="http://127.0.0.1:5000/analyze"
-
-                    with st.spinner("Running AI analysis..."):
-
-                        response=requests.post(
-                            url,
-                            json={"text":email_text}
-                        )
-
-                        result=response.json()
-
-                    # METRICS
-
-                    m1,m2,m3 = st.columns(3)
-
-                    m1.metric(
-                        "Spam",
-                        result.get("spam","N/A")
-                    )
-
-                    m2.metric(
-                        "Category",
-                        result.get("category","N/A")
-                    )
-
-                    m3.metric(
-                        "Priority",
-                        result.get("priority","N/A")
-                    )
-
-                    st.divider()
-
-                    # SUMMARY
-
-                    st.subheader("Email Summary")
-
-                    st.markdown(
-                        f"""
-                        <div class="card">
-                        {result.get("summary","No summary available")}
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-
-                    # SENTIMENT
-
-                    st.subheader("Sentiment")
-
-                    st.success(
-                        result.get("sentiment","Neutral")
-                    )
-
-                    st.divider()
-
-                    # KEYWORDS
-
-                    st.subheader("Keywords")
-
-                    keywords=result.get("keywords",[])
-
-                    if keywords:
-
-                        tags=""
-
-                        for k in keywords:
-                            tags+=f'<span class="tag">{k}</span>'
-
-                        st.markdown(tags,unsafe_allow_html=True)
-
-                    else:
-                        st.write("No keywords detected")
-
-                except Exception as e:
-
-                    st.error("Backend server not running")
-
-# ------------------------------------------------
-# PAGE 2 DATASET
-# ------------------------------------------------
-elif page == "Dataset":
-
-    st.header("📊 Dataset Dashboard")
-
-    try:
-
-        df=pd.read_csv("final_email_ai_dataset.csv")
-
-        s1,s2,s3=st.columns(3)
-
-        s1.metric("Total Emails",len(df))
-
-        if "category" in df.columns:
-            s2.metric("Categories",df["category"].nunique())
-
-        if "spam" in df.columns:
-            spam_ratio=(df["spam"].sum()/len(df))*100
-            s3.metric("Spam %",f"{round(spam_ratio,1)}%")
-
-        st.divider()
-
-        st.dataframe(
-            df.head(1000),
-            use_container_width=True
-        )
-
-        csv=df.to_csv(index=False).encode("utf-8")
-
-        st.download_button(
-            "Download Dataset",
-            csv,
-            "sentinmail_dataset.csv",
-            "text/csv"
-        )
-
-    except:
-
-        st.error("Dataset file not found")

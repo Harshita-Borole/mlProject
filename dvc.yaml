@@ -1,0 +1,8 @@
+stages:
+  clean_data:
+    cmd: python email_ai_backend/src/data_cleaning.py
+    deps:
+    - email_ai_backend/data/processed
+    - email_ai_backend/src/data_cleaning.py
+    outs:
+    - email_ai_backend/data/processed_clean

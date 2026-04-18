@@ -1,0 +1,20 @@
+schema: '2.0'
+stages:
+  clean_data:
+    cmd: python email_ai_backend/src/data_cleaning.py
+    deps:
+    - path: email_ai_backend/data/processed
+      hash: md5
+      md5: cfb5005f4a75731fb7064ee3b7f2446c.dir
+      size: 73589637
+      nfiles: 2
+    - path: email_ai_backend/src/data_cleaning.py
+      hash: md5
+      md5: 660423e043289dd5ca1f1d81604db0dd
+      size: 784
+    outs:
+    - path: email_ai_backend/data/processed_clean
+      hash: md5
+      md5: cfb5005f4a75731fb7064ee3b7f2446c.dir
+      size: 73589637
+      nfiles: 2
