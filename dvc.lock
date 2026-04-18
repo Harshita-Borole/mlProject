@@ -10,8 +10,8 @@ stages:
       nfiles: 2
     - path: email_ai_backend/src/data_cleaning.py
       hash: md5
-      md5: 660423e043289dd5ca1f1d81604db0dd
-      size: 784
+      md5: 24db2d4d2c407cf6453855484f66c5cf
+      size: 822
     outs:
     - path: email_ai_backend/data/processed_clean
       hash: md5
