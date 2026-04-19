@@ -58,8 +58,9 @@ if st.button("Analyze Email"):
             st.subheader("🔑 Keywords")
             st.write(", ".join(result["keywords"]))
 
-            st.subheader("🔥 Importance Score")
-            st.progress(result["importance_score"] / 100)
+            #st.subheader("🔥 Importance Score")
+            #st.progress(result["importance_score"] / 100)
 
         except Exception as e:
             st.error("Backend not running! Start Flask server first.")
+
